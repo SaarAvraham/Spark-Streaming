@@ -18,7 +18,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <encoding>UTF-8</encoding>
         <scala.version>2.11.7</scala.version>
-        <spark.version>2.4.5</spark.version>
+        <spark.version>2.4.0</spark.version>
         <scala.compat.version>2.11</scala.compat.version>
     </properties>
 
@@ -59,6 +59,14 @@
             <artifactId>spark-streaming-twitter_2.11</artifactId>
             <version>1.6.3</version>
         </dependency>
+
+<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.apache.bahir/spark-sql-streaming-jdbc &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.bahir</groupId>-->
+<!--            <artifactId>spark-sql-streaming-jdbc_2.11</artifactId>-->
+<!--            <version>2.4.0</version>-->
+<!--        </dependency>-->
+
 
         <dependency>
             <groupId>org.apache.spark</groupId>
