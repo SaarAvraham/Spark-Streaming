@@ -2,12 +2,22 @@ package com.saar.spark
 
 import java.util.regex.Pattern
 
+import ch.qos.logback.classic.{Level, Logger}
+import org.apache.log4j.{Level, Logger}
+
 object Utilities {
     /** Makes sure only ERROR messages get logged to avoid log spam. */
   def setupLogging() = {
     import org.apache.log4j.{Level, Logger}
-    val rootLogger = Logger.getRootLogger()
-    rootLogger.setLevel(Level.ERROR)   
+    val rootLogger = Logger.getRootLogger
+    rootLogger.setLevel(Level.ERROR)
+  }
+
+  def setUpLoggingSl4J() = {
+    import ch.qos.logback.classic.{Level,Logger}
+    import org.slf4j.LoggerFactory
+
+    LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME).asInstanceOf[Logger].setLevel(Level.INFO)
   }
   
   /** Configures Twitter service credentials using twiter.txt in the main workspace directory */
