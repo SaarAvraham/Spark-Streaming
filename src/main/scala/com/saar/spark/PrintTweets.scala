@@ -5,6 +5,8 @@ package com.saar.spark
 import java.sql.DriverManager
 
 import Utilities._
+import org.apache.spark.sql.SparkSession
+import org.apache.spark.streaming.rabbitmq.RabbitMQUtils
 import org.apache.spark.streaming.twitter.TwitterUtils
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 
@@ -14,8 +16,6 @@ object PrintTweets {
   /** Our main function where the action happens */
   def main(args: Array[String]) {
     setUpLoggingSl4J()
-
-    // Configure Twitter credentials using twitter.txt
     setupTwitter()
     
     // Set up a Spark streaming context named "PrintTweets" that runs locally using
@@ -24,13 +24,6 @@ object PrintTweets {
 
     // Create a DStream from Twitter using our streaming context
     val tweets = TwitterUtils.createStream(ssc, None)
-
-//    // Now extract the text of each status update into RDD's using map()
-//    val statuses = tweets.map(status => status.getText())
-//
-////    // Print out the first ten
-////    statuses.print()
-//    val statusesCount = tweets.count()
 
     tweets.foreachRDD{
       rdd =>
@@ -52,7 +45,6 @@ object PrintTweets {
         }
     }
 
-    // Kick it all off
     ssc.start()
     ssc.awaitTermination()
   }  

@@ -60,6 +60,13 @@
             <version>1.6.3</version>
         </dependency>
 
+
+        <dependency>
+            <groupId>com.stratio.receiver</groupId>
+            <artifactId>spark-rabbitmq</artifactId>
+            <version>LATEST</version>
+        </dependency>
+
 <!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.apache.bahir/spark-sql-streaming-jdbc &ndash;&gt;-->
 <!--        <dependency>-->
 <!--            <groupId>org.apache.bahir</groupId>-->
