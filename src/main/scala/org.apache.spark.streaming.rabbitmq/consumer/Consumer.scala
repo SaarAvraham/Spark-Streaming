@@ -248,7 +248,7 @@ object Consumer extends Logging with ConsumerParamsUtils {
     })
   }
 
-  private def getChannel(params: Map[String, String]): Try[Channel] = {
+  def getChannel(params: Map[String, String]): Try[Channel] = {
     val addresses = getAddresses(params)
     val addressesKey = addresses.mkString(",")
     val connection = {

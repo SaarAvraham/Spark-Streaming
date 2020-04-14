@@ -17,6 +17,7 @@ package org.apache.spark.streaming.rabbitmq.receiver
 
 import com.rabbitmq.client.QueueingConsumer.Delivery
 import com.rabbitmq.client._
+import com.saar.spark.PrintTweets.Message
 import org.apache.spark.internal.Logging
 import org.apache.spark.storage.StorageLevel
 import org.apache.spark.streaming.StreamingContext
@@ -53,11 +54,13 @@ class RabbitMQReceiver[R: ClassTag](
                                    )
   extends Receiver[R](storageLevel) with Logging {
 
+  var consumer = null : Consumer
+
   def onStart() {
     implicit val akkaSystem = akka.actor.ActorSystem()
 
     Try {
-      val consumer = Consumer(params)
+      consumer = Consumer(params)
 
       if (getFairDispatchFromParams(params))
         consumer.setFairDispatchQoS(getPrefetchCountFromParams(params))
@@ -82,6 +85,7 @@ class RabbitMQReceiver[R: ClassTag](
     Consumer.closeConnections()
     log.info("Closed all RabbitMQ connections")
   }
+
 
   /** Create a socket connection and receive data until receiver is stopped */
   private def receive(consumer: Consumer, queueConsumer: QueueingConsumer) {
@@ -114,8 +118,14 @@ class RabbitMQReceiver[R: ClassTag](
     }
   }
 
+  private def handleMessage(delivery: Delivery): R = {
+    val r = messageHandler(delivery).asInstanceOf[Message]
+    r.setChannel(consumer.channel)
+    r.asInstanceOf[R]
+  }
+
   private def processDelivery(consumer: Consumer, delivery:Delivery) {
-    Try(store(messageHandler(delivery)))
+    Try(store(handleMessage(delivery)))
     match {
       case Success(data) =>
         //Send ack if not set the auto ack property

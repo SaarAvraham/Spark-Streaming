@@ -239,7 +239,7 @@ class RabbitMQRDD[R: ClassTag](
       null.asInstanceOf[R]
     }
 
-    private def getConsumer(part: RabbitMQPartition, consumerParams: Map[String, String]): Consumer = {
+    def getConsumer(part: RabbitMQPartition, consumerParams: Map[String, String]): Consumer = {
       val consumer = Consumer(consumerParams)
       consumer.setQueue(
         part.queue,
