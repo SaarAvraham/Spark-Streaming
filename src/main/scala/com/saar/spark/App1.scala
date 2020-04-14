@@ -1,5 +1,9 @@
 package com.saar.spark
 
+import java.sql.DriverManager
+
+import org.apache.spark.streaming.{Seconds, StreamingContext}
+
 object App1 {
   def main(args : Array[String]) {
 
@@ -11,5 +15,9 @@ object App1 {
 
     favNums.sortWith((i1,i2) => i1 > i2)
       .foreach(i => println(i))
+
+
+
+
   }
 }

@@ -6,7 +6,7 @@ import java.sql.DriverManager
 
 import Utilities._
 import org.apache.spark.streaming.rabbitmq.RabbitMQUtils
-import org.apache.spark.streaming.{Seconds, StreamingContext}
+import org.apache.spark.streaming.{Seconds, StreamingContext, rabbitmq}
 
 /** Simple application to listen to a stream of Tweets and print them out */
 object PrintTweets {
@@ -14,29 +14,35 @@ object PrintTweets {
   /** Our main function where the action happens */
   def main(args: Array[String]) {
     setUpLoggingSl4J()
-    setupTwitter()
-    
+
     // Set up a Spark streaming context named "PrintTweets" that runs locally using
     // all CPU cores and one-second batches of data
     val ssc = new StreamingContext("local[*]", "PrintTweets", Seconds(1))
 
     val messages = RabbitMQUtils.createStream[String](ssc,
-      Map("queueName" -> "SaarNewQueue3",
+      Map("queueName" -> "SaarQueueNew3",
       "exchangeName" -> "tut.fanout",
       "password" -> "nice",
       "userName" -> "nice"
     ));
 
-    messages.foreachRDD{
+    messages.foreachRDD {
       rdd =>
-        rdd.foreachPartition{
-          part =>
-            for (message <- part)
-                    {
-                      println("!@# " + message)
+        if(!rdd.isEmpty()){
+          rdd.foreachPartition {
+            part =>
+              val url = String.format("jdbc:sqlserver://%s:%s;databaseName=%s;integratedSecurity=false", "localhost", 1433.toString, "Data-Lake")
+              val conn= DriverManager.getConnection(url, "sa", "sa")
+              val batchInsert = conn.prepareStatement("INSERT INTO dt (value) VALUES (?) ")
 
-                    }
+              for (row <- part) {
+                batchInsert.setString(1, row)
+                batchInsert.addBatch()
+                batchInsert.clearParameters()
+              }
 
+              println("lines inserted: " + batchInsert.executeBatch().sum)
+          }
         }
     }
 //
