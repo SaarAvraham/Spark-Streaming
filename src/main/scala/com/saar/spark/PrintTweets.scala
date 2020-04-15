@@ -22,8 +22,10 @@ object PrintTweets {
     val messages = RabbitMQUtils.createStream[String](ssc,
       Map("queueName" -> "SaarQueueNew3",
       "exchangeName" -> "tut.fanout",
-      "password" -> "nice",
-      "userName" -> "nice"
+//      "password" -> "nice",
+      "password" -> "guest",
+//      "userName" -> "nice"
+      "userName" -> "guest"
     ));
 
     messages.foreachRDD {
@@ -42,6 +44,7 @@ object PrintTweets {
                 batchInsert.clearParameters()
               }
 
+              conn.close()
               println("lines inserted: " + batchInsert.executeBatch().sum)
           }
         }
