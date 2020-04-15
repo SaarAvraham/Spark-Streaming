@@ -10,7 +10,7 @@ import org.apache.spark.streaming.{Seconds, StreamingContext, rabbitmq}
 
 /** Simple application to listen to a stream of Tweets and print them out */
 object PrintTweets {
- 
+
   /** Our main function where the action happens */
   def main(args: Array[String]) {
     setUpLoggingSl4J()
@@ -31,8 +31,9 @@ object PrintTweets {
         if(!rdd.isEmpty()){
           rdd.foreachPartition {
             part =>
-              val url = String.format("jdbc:sqlserver://%s:%s;databaseName=%s;integratedSecurity=false", "localhost", 1433.toString, "Data-Lake")
-              val conn= DriverManager.getConnection(url, "sa", "sa")
+//              val url = String.format("jdbc:sqlserver://%s:%s;databaseName=%s;integratedSecurity=false", "localhost", 1433.toString, "Data-Lake")
+//              val conn= DriverManager.getConnection(url, "sa", "sa")
+              val conn = DriverManager.getConnection("jdbc:sqlserver://DESKTOP-S42L7FK\\MSSQLSERVER01;databaseName=Data-Lake", "sa", "sa")
               val batchInsert = conn.prepareStatement("INSERT INTO dt (value) VALUES (?) ")
 
               for (row <- part) {
