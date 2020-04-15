@@ -36,8 +36,8 @@ object PrintTweets {
               val conn = DriverManager.getConnection("jdbc:sqlserver://DESKTOP-S42L7FK\\MSSQLSERVER01;databaseName=Data-Lake", "sa", "sa")
               val batchInsert = conn.prepareStatement("INSERT INTO dt (value) VALUES (?) ")
 
-              for (row <- part) {
-                batchInsert.setString(1, row)
+              for (body <- part) {
+                batchInsert.setString(1, body)
                 batchInsert.addBatch()
                 batchInsert.clearParameters()
               }
