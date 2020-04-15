@@ -33,8 +33,7 @@ object PrintTweets {
         if(!rdd.isEmpty()){
           rdd.foreachPartition {
             part =>
-//              val url = String.format("jdbc:sqlserver://%s:%s;databaseName=%s;integratedSecurity=false", "localhost", 1433.toString, "Data-Lake")
-//              val conn= DriverManager.getConnection(url, "sa", "sa")
+//              val conn= DriverManager.getConnection(String.format("jdbc:sqlserver://%s:%s;databaseName=%s;integratedSecurity=false", "localhost", 1433.toString, "Data-Lake"), "sa", "sa")
               val conn = DriverManager.getConnection("jdbc:sqlserver://DESKTOP-S42L7FK\\MSSQLSERVER01;databaseName=Data-Lake", "sa", "sa")
               val batchInsert = conn.prepareStatement("INSERT INTO dt (value) VALUES (?) ")
 
@@ -44,8 +43,8 @@ object PrintTweets {
                 batchInsert.clearParameters()
               }
 
-              conn.close()
               println("lines inserted: " + batchInsert.executeBatch().sum)
+              conn.close()
           }
         }
     }
